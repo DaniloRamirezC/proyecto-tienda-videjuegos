@@ -4,6 +4,8 @@ import "./globals.css";
 import Image from "next/image";
 import logoImg from "./assets/img/Logo-Retrogaming.jpg"
 import Link from "next/link";
+import BarraBusqueda from "./componentes/BarraBusqueda";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,19 +40,9 @@ export default function RootLayout({ children }: {children:React.ReactNode}) {
               />
             </Link>
 
-            <form className="flex items-center gap-2 flex-1 w-full max-w-md mx-auto">
-              <input
-                type="text"
-                placeholder="Buscar"
-                className="w-full border border-zinc-300 rounded px-3 py-1.5 text-sm outline-none focus:border-blue-500"
-              />
-              <button
-                type="submit"
-                className="border border-emerald-600 text-emerald-600 px-4 py-1.5 rounded text-sm font-medium hover:bg-emerald-50"
-              >
-                Buscar
-              </button>
-            </form>
+            <Suspense fallback={<div className="flex-1 max-w-lg mx-auto h-9" />}>
+              <BarraBusqueda />
+            </Suspense>
 
             <div className="flex items-center gap-2 flex-shrink-0">
               <Link
