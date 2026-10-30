@@ -72,10 +72,10 @@ export default function RootLayout({ children }: {children:React.ReactNode}) {
 
               <div className="absolute right-6">
                 <Link
-                  href="/checkout"
+                  href="/carrito"
                   className="bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-bold px-4 py-1.5 rounded flex items-center gap-2"
                 >
-                  🛒 Carrito $5.000
+                  🛒 Carrito
                 </Link>
               </div>
 

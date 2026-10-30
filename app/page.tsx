@@ -46,21 +46,45 @@ function Catalogo() {
     return coincideTexto && coincideStock;
   });
 
+  const carroProducto = (producto: any) => {
+  const guardado = localStorage.getItem("cart");
+  let cart = guardado ? JSON.parse(guardado) : [];
+
+  const existente = cart.find((item: any) => item.id === producto.id);
+
+  if (existente) {
+    if (existente.cantidad >= producto.stock) {
+      alert(`No puedes agregar más de ${producto.stock} unidades de este juego.`);
+      return;
+    }
+    existente.cantidad += 1;
+  } else {
+    cart.push({ ...producto, cantidad: 1 });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert(`"${producto.nombre}" fue añadido al carrito`);
+};
+
   return (
+   <div className="min-h-screen bg-gray-900 text-white">
     <main className="space-y-6 max-w-7xl mx-auto px-6 py-6">
       <div className="flex justify-between items-center border-b pb-3">
-        <h3 className="font-bold text-xl text-zinc-800">
-          Novedades ({productosFiltrados.length})
+        <h3 className="font-bold text-3xl text-white">
+          Novedades
         </h3>
+        <p className="text-gray-400 text-sm mt-1">
+            Explora los títulos disponibles en Retrogaming Haven.
+        </p>
         {busqueda && (
-          <span className="text-sm text-zinc-500">
-            Filtro: &quot;<strong>{busqueda}</strong>&quot;
+          <span className="text-sm text-gray-400">
+            Filtro: &quot;<strong className="text-purple-400">{busqueda}</strong>&quot;
           </span>
         )}
       </div>
 
       {productosFiltrados.length === 0 ? (
-        <p className="text-center py-16 text-zinc-500 text-sm">
+        <p className="text-center py-16 text-gray-400 text-sm">
           No se encontraron productos para tu búsqueda.
         </p>
       ) : (
@@ -68,39 +92,53 @@ function Catalogo() {
           {productosFiltrados.map((item) => (
             <div
               key={item.id}
-              className="bg-white border rounded-lg p-4 flex flex-col justify-between shadow-sm"
+              className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden shadow-lg flex flex-col justify-between hover:border-purple-500 transition duration-300"
             >
               <div>
-                <div className="h-72 w-full bg-zinc-50 rounded mb-3 overflow-hidden flex items-center justify-center p-2">
+                <div className="h-80 w-full overflow-hidden rounded-t-lg bg-gray-900 relative">
                   <Image
                     src={item.imagen}
                     alt={item.nombre}
-                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    className="w-full h-full object-fill transition-transform duration-300 hover:scale-105"
                   />
                 </div>
-                <span className="text-xs font-semibold text-blue-600">
-                  {item.categoria}
-                </span>
-                <h4 className="font-bold text-sm mt-1">{item.nombre}</h4>
+                <div className="p-4 pb-0">
+                  <span className="text-xs font-semibold text-purple-400 uppercase tracking-wider block mb-1">
+                    {item.categoria}
+                  </span>
+                  <h4 className="font-bold text-base text-white line-clamp-2">{item.nombre}</h4>
+                </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t flex justify-between items-center">
-                <span className="font-bold text-sm">
-                  ${item.precio.toLocaleString("es-CL")}
-                </span>
-                <span
-                  className={`text-xs font-bold ${
-                    item.stock > 0 ? "text-green-600" : "text-red-500"
-                  }`}
-                >
-                  {item.stock > 0 ? `Stock: ${item.stock}` : "Agotado"}
-                </span>
+              <div className="p-4 pt-3 border-t border-gray-700 mt-4">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="font-bold text-xl text-green-400">
+                    ${item.precio.toLocaleString("es-CL")}
+                  </span>
+                  <span
+                    className={`text-xs font-bold ${
+                      item.stock > 0 ? "text-green-500" : "text-red-400"
+                    }`}
+                  >
+                    {item.stock > 0 ? `Stock: ${item.stock}` : "Agotado"}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  disabled={item.stock === 0}
+                  onClick={() => carroProducto(item)}
+                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed text-white text-xs font-bold py-2.5 rounded transition-colors"
+                  >
+                  {item.stock > 0 ? "Añadir al carrito" : "Sin Stock"}
+                </button>
               </div>
             </div>
           ))}
         </div>
       )}
     </main>
+   </div>
   );
 }
 
